@@ -1,0 +1,59 @@
+version: '3.5'
+
+services:
+  rmqnamesrv:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: foxiswho/rocketmq:server
+    container_name: rmqnamesrv
+    volumes:
+      - ./logs/:/opt/logs/
+      - ./store/:/opt/store/
+    ports:
+      - '9876:9876'
+    networks:
+        rmq:
+          aliases:
+            - rmqnamesrv
+
+  rmqbroker:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: foxiswho/rocketmq:broker
+    container_name: rmqbroker
+    environment:
+        NAMESRV_ADDR: 'rmqnamesrv:9876'
+        JAVA_OPTS: ' -Duser.home=/opt'
+        JAVA_OPT_EXT: '-server -Xms128m -Xmx128m -Xmn128m'
+    ports:
+      - '10909:10909'
+      - '10911:10911'
+    volumes:
+      - ./logs/:/opt/logs/
+      - ./store/:/opt/store/
+      - ./conf/broker.conf:/etc/rocketmq/broker.conf
+    command: mqbroker -c /etc/rocketmq/broker.conf
+    depends_on:
+      - rmqnamesrv
+    networks:
+      rmq:
+        aliases:
+          - rmqbroker
+
+  rmqconsole:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: styletang/rocketmq-console-ng
+    container_name: rmqconsole
+    environment:
+        JAVA_OPTS: '-Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false'
+    ports:
+      - '8081:8080'
+    depends_on:
+      - rmqnamesrv
+    networks:
+      rmq:
+        aliases:
+          - rmqconsole
+
+networks:
+  rmq:
+    name: rmq
+    driver: bridge

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  server:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: gitea/gitea:1.13.1
+    container_name: gitea
+    environment:
+      - USER_UID=${USER_UID}
+      - USER_GID=${USER_GID}
+      - HTTP_PROXY=${HTTP_PROXY}
+      - HTTPS_PROXY=${HTTPS_PROXY}
+      - FTP_PROXY=${FTP_PROXY}
+    env_file:
+      - .env
+    volumes:
+      - ./data/:/data/
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '3000:3000'
+      - '2222:22'

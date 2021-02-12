@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  zookeeper:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: confluent/zookeeper
+    environment:
+      zk_id: '1'
+    volumes:
+      - ./zoo/data/:/var/lib/zookeeper/data/
+      - ./zoo/log/:/var/lib/zookeeper/log/
+    ports:
+      - '2181:2181'
+    networks:
+      - back-tier
+
+  kafka:
+    restart: unless-stopped #always, no, on-failure, on-failure:3, unless-stopped
+    image: confluent/kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPIC: 'users:1:3'
+    volumes:
+      - ./broker/data/:/var/lib/kafka/data/
+    ports:
+      - '9092:9092'
+    networks:
+      - back-tier
+
+networks:
+  back-tier:

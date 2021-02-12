@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mongo:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: mongo
+    container_name: mongodb_server
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+        - ./data/db/:/data/db/
+        - ./data/log/:/var/log/mongodb/
+    ports:
+      - '27017:27017'

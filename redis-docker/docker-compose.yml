@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  redis:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: redis:5.0.5-alpine
+    container_name: redis_server
+    volumes:
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/:/data/
+    ports:
+      - '6379:6379'

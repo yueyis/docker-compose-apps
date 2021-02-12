@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mysql:
+    restart: unless-stopped # always, no, on-failure, on-failure:3, unless-stopped
+    image: mysql:5.7
+    container_name: mysql_server
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_USERNAME}
+      MYSQL_USER: ${MYSQL_USERNAME}
+      MYSQL_PASS: ${MYSQL_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+      - ./data/:/var/lib/mysql/
+    ports:
+      - '3306:3306'
