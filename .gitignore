@@ -1,0 +1,15 @@
+gitea-docker/data/*
+jenkins-docker/data/*
+
+kafka-docker/zoo/data/*
+kafka-docker/zoo/log/*
+kafka-docker/broker/data/*
+
+mongo-docker/data/db/*
+mongo-docker/data/log/*
+
+mysql-docker/data/*
+redis-docker/data/*
+
+rocketmq-docker/logs/*
+rocketmq-docker/store/*
